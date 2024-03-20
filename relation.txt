@@ -1,0 +1,14 @@
+
+user
+  first_name;
+  last_name:
+  full_name;
+  #Relation
+  has_many: bussiness
+
+comments:
+  message
+  user
+  #Relation
+  belongs_to: user
+  belongs_to: business

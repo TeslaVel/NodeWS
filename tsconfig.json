@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es2018",
+    "experimentalDecorators": true, // for sequelize-typescript
+    "emitDecoratorMetadata": true, // for sequelize-typescript
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "resolveJsonModule": true
+  },
+  "include": [
+    "src"
+  ],
+}

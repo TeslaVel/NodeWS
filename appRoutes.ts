@@ -41,7 +41,7 @@ export default (app: Express) => {
   **/
   router.get('/businesses', listBusinesses);
   router.post('/businesses', createBusiness);
-  
+
   return router;
 };
 

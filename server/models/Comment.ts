@@ -27,7 +27,7 @@ class Comment extends Model<CommentAttributes, CommentCreationAttributes> implem
       id: this.id,
       message: this.message,
       comment_type: this.comment_type,
-      User: this.User || [],
+      user: this.User || [],
     };
   }
 }

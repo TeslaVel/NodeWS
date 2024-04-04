@@ -46,3 +46,18 @@ export function inclusion(
     subQuery: false
   }
 }
+
+export function paginate(options: { page: any, perPage: number, query?: {}}) {
+  const currentPage = parseInt(options.page);
+  const pg = currentPage > 0
+    ? currentPage - 1
+    : 0
+
+  const offset = pg * options.perPage;
+
+  return {
+    ...options.query,
+    limit: options.perPage,
+    offset
+  }
+}

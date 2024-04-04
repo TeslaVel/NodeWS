@@ -41,8 +41,8 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
       email: this.email,
       business_id: this.business_id,
       password_digest: this.password_digest,
-      Comments: this.Comments?.map(comment => comment.toJSON()) || [],
-      Business: this.Business?.toJSON()
+      comments: this.Comments?.map(comment => comment) || [],
+      businesses: this.Business
     };
   }
 }

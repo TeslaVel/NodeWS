@@ -1,7 +1,7 @@
+import { Request, Response, NextFunction } from 'express';
 import User from '../models/User';
 import { UserAttributes } from '../types';
 import { verifyToken } from '../utils/jwtUtils'
-import { Request, Response, NextFunction } from 'express';
 
 export async function sessionMiddleWare(req: Request, res: Response, next: NextFunction) {
 	const tokenHeader: string | undefined = req.headers['authorization'];
@@ -16,12 +16,12 @@ export async function sessionMiddleWare(req: Request, res: Response, next: NextF
 	const decoded: any = verifyToken(token)
 
 	if (decoded == false) {
-		return res.status(404).json({ error: true, message: 'Token is invalid', data: null });
+	  return res.status(404).json({ error: true, message: 'Token is invalid', data: null });
 	}
 
-	const userFound: User | null = await User.findOne({
+	const userFound: UserAttributes | null = await User.findOne({
 		where: { id: decoded.userId},
-		attributes: ['id']
+		attributes: ['id', 'business_id']
 	});
 
 	if (!userFound) {

@@ -13,7 +13,7 @@ export async function listBusinesses(req: Request, res: Response) {
       include: [{
         model: User,
         as: User.alias,
-        required: true,
+        required: false,
       }],
     });
 

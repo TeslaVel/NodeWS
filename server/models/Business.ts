@@ -25,7 +25,7 @@ class Business extends Model<BusinessAttributes, BusinessCreationAttributes> imp
     return {
       id: this.id,
       name: this.name,
-      Users: this.Users?.map(user => user.toJSON()) || [],
+      users: this.Users?.map(user => user) || [],
     };
   }
 }

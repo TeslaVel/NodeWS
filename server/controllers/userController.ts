@@ -6,31 +6,40 @@ import { UserAttributes } from '../types'
 import bcrypt from 'bcrypt';
 import { generateToken } from '../utils/jwtUtils'
 import { returnJson } from '../utils/response'
-
+import { inclusion, paginate } from '../utils/inclusion'
 /***
 * LIST USER
 **/
 export async function listUsers(req: Request, res: Response) {
+  const page: any = req?.query?.page || 1;
+  const perPage = 10;
   console.log('Users listUsers',)
   try {
-    const users = await User.findAll({
-      attributes: ['id', 'business_id', 'first_name', 'email', 'username', 'password_digest', 'created_at'],
-      include: [{
-        model: Comment,
-      },
-      {
-        model: Business,
-      }
-      ]
-    });
+    const users = await User.findAndCountAll(
+      paginate({
+        page,
+        perPage,
+        query: {
+          attributes: ['id', 'business_id', 'first_name', 'email', 'username', 'password_digest', 'created_at'],
+          ...inclusion({
+            model: Business,
+          }),
+          ...inclusion({
+            model: Comment,
+          })
+        }
+      })
+    );
 
     return returnJson(
       {
         res,
         code: 200,
         data: {
-          count: users.length,
-          users: users
+          totalItems: users.count,
+          totalPages: Math.ceil(users.count/perPage),
+          currentPage: page,
+          comments: users.rows
         }
       }
     )

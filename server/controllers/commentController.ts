@@ -2,18 +2,27 @@ import { Request, Response } from 'express';
 import Comment, { CommentCreationAttributes } from '../models/Comment';
 import User from '../models/User';
 import { UserAttributes } from '../types';
-import { inclusion } from '../utils/inclusion'
+import { inclusion, paginate } from '../utils/inclusion'
 import { returnJson } from '../utils/response'
 
 /***
 * LIST COMMENTS
 **/
 export async function listComments(req: Request, res: Response) {
+  const page: any = req?.query?.page || 1;
+  const perPage = 10;
+
   try {
-    const comments = await Comment.findAll(
-      inclusion({
-        model: User,
-        required: false
+    const comments = await Comment.findAndCountAll(
+      paginate({
+        page,
+        perPage,
+        query: {
+          ...inclusion({
+            model: User,
+            required: false
+          })
+        }
       })
     );
 
@@ -21,7 +30,12 @@ export async function listComments(req: Request, res: Response) {
       {
         res,
         code: 200,
-        data: { comments: comments }
+        data: {
+          totalItems: comments.count,
+          totalPages: Math.ceil(comments.count/perPage),
+          currentPage: page,
+          comments: comments.rows
+        }
       }
     )
   } catch (error) {

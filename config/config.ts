@@ -6,11 +6,9 @@ const db_pass = process.env.DB_PASSWORD ?? 'password';
 const db_host = process.env.DB_HOST ?? 'localhost';
 const db_port = process.env.DB_PORT ?? 5432
 
-
-const development = {
+const defaultValue = {
   username: db_user,
   password: db_pass,
-  database: `${db_name}_development`,
   host: db_host,
   port: db_port,
   dialect: 'postgres',
@@ -18,32 +16,21 @@ const development = {
   dialectOptions: {
     bigNumberStrings: true
   }
+}
+
+const development = {
+  ...defaultValue,
+  database: `${db_name}_development`,
 };
 
 const test = {
-  username: db_user,
-  password: db_pass,
+  ...defaultValue,
   database: `${db_name}_test`,
-  host: db_host,
-  port: db_port,
-  dialect: 'postgres',
-  migrationStorage: 'sequelize',
-  dialectOptions: {
-    bigNumberStrings: true
-  }
 };
 
 const production = {
-  username: db_user,
-  password: db_pass,
+  ...defaultValue,
   database: `${db_name}_production`,
-  host: db_host,
-  port: db_port,
-  dialect: 'postgres',
-  migrationStorage: 'sequelize',
-  dialectOptions: {
-    bigNumberStrings: true
-  }
 };
 
 interface DbConfig {
@@ -54,7 +41,7 @@ interface DbConfig {
   port: number | string ;
   dialect: string;
   migrationStorage: string;
-  dialectOptions?: object;
+  dialectOptions?: { bigNumberStrings: boolean };
 }
 
 const getDbConfig = (): DbConfig => {

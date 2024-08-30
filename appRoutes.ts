@@ -7,6 +7,7 @@ import { sessionMiddleWare } from './server/middlewares/sessionMiddleWare'
   **/
 import { createComment, listComments } from './server/controllers/commentController';
 import { createUser, loginUser, listUsers, updateUser } from './server/controllers/userController';
+import { listPosts, createPost } from './server/controllers/postController';
 import { createBusiness, listBusinesses } from './server/controllers/businessController';
 
 
@@ -17,6 +18,7 @@ export default (app: Express) => {
   app.use('/users', sessionMiddleWare);
   app.use('/comments', sessionMiddleWare);
   app.use('/businesses', sessionMiddleWare);
+  app.use('/posts', sessionMiddleWare);
 
   router.get('/', (req: Request, res: Response) => {
     res.send('Initial Page')
@@ -35,6 +37,12 @@ export default (app: Express) => {
   **/
   router.get('/comments', listComments);
   router.post('/comments', createComment);
+
+  /***
+  * COMMENT Routes
+  **/
+    router.get('/posts', listPosts);
+    router.post('/posts', createPost);
 
   /***
   * BUSINESS Routes

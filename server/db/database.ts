@@ -1,14 +1,16 @@
-import developmentConfig from '../../config/config';
-import { Sequelize } from 'sequelize';
+import condig from '../../config/config';
+import { Sequelize, Dialect } from 'sequelize';
 import '../../dotenv';
 require('dotenv').config();
 
+const { database, username, password, host, dialect } = condig.db;
+
 const sequelize = new Sequelize(
-  developmentConfig.db.database,
-  developmentConfig.db.username,
-  developmentConfig.db.password, {
-  host: developmentConfig.db.host,
-  dialect: 'postgres',
+  database,
+  username,
+  password, {
+  host: host,
+  dialect: dialect as Dialect,
 });
 
 sequelize.sync({ force: false })

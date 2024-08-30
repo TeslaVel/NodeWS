@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
 import User, { UserCreationAttributes } from '../models/User';
 import Comment from '../models/Comment';
-import Business from '../models/Business';
+import Post from '../models/Post';
 import { UserAttributes } from '../types'
 import bcrypt from 'bcrypt';
 import { generateToken } from '../utils/jwtUtils'
 import { returnJson } from '../utils/response'
 import { inclusion, paginate } from '../utils/inclusion'
+
 /***
 * LIST USER
 **/
@@ -21,12 +22,26 @@ export async function listUsers(req: Request, res: Response) {
         perPage,
         query: {
           attributes: ['id', 'business_id', 'first_name', 'email', 'username', 'password_digest', 'created_at'],
-          ...inclusion({
-            model: Business,
-          }),
-          ...inclusion({
-            model: Comment,
-          })
+          ...inclusion(
+            [
+              {
+                model: Post,
+                attributes: ['id', 'created_at', 'user_id'],
+                order: {
+                  column: 'created_at',
+                  order: 'ASC'
+                }
+              },
+              {
+                model: Comment,
+                attributes: ['id', 'created_at', 'user_id', 'post_id'],
+                order: {
+                  column: 'created_at',
+                  order: 'ASC'
+                }
+              },
+            ],
+          ),
         }
       })
     );
@@ -39,7 +54,7 @@ export async function listUsers(req: Request, res: Response) {
           totalItems: users.count,
           totalPages: Math.ceil(users.count/perPage),
           currentPage: page,
-          comments: users.rows
+          users: users.rows
         }
       }
     )

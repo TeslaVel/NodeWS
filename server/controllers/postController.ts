@@ -1,26 +1,27 @@
 import { Request, Response } from 'express';
-import Comment, { CommentCreationAttributes } from '../models/Comment';
-import User from '../models/User';
-import Post from '../models/Post';
+import Post, { PostCreationAttributes } from '../models/Post';
+import Comment from '../models/Comment';
+// import User from '../models/User';
 import { UserAttributes } from '../types';
 import { inclusion, paginate } from '../utils/inclusion'
 import { returnJson } from '../utils/response'
 
 /***
-* LIST COMMENTS
+* LIST PostS
 **/
-export async function listComments(req: Request, res: Response) {
+export async function listPosts(req: Request, res: Response) {
   const page: any = req?.query?.page || 1;
   const perPage = 10;
 
   try {
-    const comments = await Comment.findAndCountAll(
+    const posts = await Post.findAndCountAll(
       paginate({
         page,
         perPage,
         query: {
+          attributes: ['id', 'user_id', 'body', 'created_at'],
           ...inclusion([{
-            model: User,
+            model: Comment,
             required: false
           }])
         }
@@ -32,10 +33,10 @@ export async function listComments(req: Request, res: Response) {
         res,
         code: 200,
         data: {
-          totalItems: comments.count,
-          totalPages: Math.ceil(comments.count/perPage),
+          totalItems: posts.count,
+          totalPages: Math.ceil(posts.count/perPage),
           currentPage: page,
-          comments: comments.rows
+          post: posts.rows
         }
       }
     )
@@ -45,24 +46,22 @@ export async function listComments(req: Request, res: Response) {
       {
         res,
         code: 500,
-        message: 'An error occurred while trying to list comments.'
+        message: 'An error occurred while trying to list posts.'
       }
     )
   }
 }
 
 /***
-* CREATE COMMENT
+* CREATE POST
 **/
-export async function createComment(req: Request, res: Response) {
+export async function createPost(req: Request, res: Response) {
   try {
     const {
-      message,
-      post_id,
+      body,
     } = req.body;
 
     const user: UserAttributes = res.locals.user;
-    const post = await Post.findByPk(post_id);
 
     if (!user?.id) {
       return returnJson(
@@ -74,27 +73,18 @@ export async function createComment(req: Request, res: Response) {
       )
     }
 
-    if (!post) {
-      return returnJson({
-        res,
-        code: 404,
-        message: 'Post does not exits'
-      })
-    }
-
-    const comment: CommentCreationAttributes = {
-      message,
-      user_id: user.id,
-      post_id: post_id
+    const post: PostCreationAttributes = {
+      body,
+      user_id: user.id
     };
 
-    const createdComment = await Comment.create(comment)
+    const createdPost = await Post.create(post)
 
     return returnJson(
       {
         res,
         code: 200,
-        data: { comments: createdComment }
+        data: { post: createdPost }
       }
     )
   } catch (error) {
@@ -103,7 +93,7 @@ export async function createComment(req: Request, res: Response) {
       {
         res,
         code: 500,
-        message: "The comment could not be created"
+        message: "The post could not be created"
       }
     )
   }

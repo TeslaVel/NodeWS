@@ -1,6 +1,15 @@
 # NodeScript
 MC project made on nodejs using sequelize and postgres
 
+# Install
+```sh
+npm install -g nodemon
+
+npm install -g sequelize-cli
+
+npm install sequelize -save
+```
+
 # Database
 ## Create Database
 ```sh
@@ -13,22 +22,31 @@ npx sequelize-cli db:drop
 ```
 
 # Run Migrations
-## up
+## UP
+### all
 ```sh
 npx sequelize-cli db:migrate
 ```
+### Specific mgiration
+```sh
+npx sequelize db:migrate --name XXXXXXXXXXXXXX-create-comments.js
+```
 
-## down
+## DOWN
 ```sh
 npx sequelize-cli db:migrate:undo:all
 ```
+## Secific migration
+```sh
+npx sequelize-cli db:migrate:undo:all --to 20230629121848-create-comments.js
+```
+
 
 # Run Seeds
 ## up
 ```sh
 npx sequelize-cli db:seed:all
 ```
-
 ## down
 ```sh
 npx sequelize-cli db:seed:undo:all
@@ -40,8 +58,6 @@ npx sequelize-cli db:seed:undo:all
 ```
 
 # Run in local
-npm install -g nodemon
-
 ```sh
  nodemon --exec ts-node app.ts
 ```

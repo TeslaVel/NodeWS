@@ -2,11 +2,22 @@ export interface CommentAttributes {
   id: number;
   message: string;
   user_id: number;
+  post_id: number;
   created_at: Date;
   updated_at: Date;
   seen?: boolean
   comment_type?: number
   entry_id?: number;
+  User?: UserAttributes;
+  Post?: PostAttributes;
+}
+
+export interface PostAttributes {
+  id: number;
+  body: string;
+  user_id: number;
+  created_at: Date;
+  updated_at: Date;
   User?: UserAttributes;
 }
 
@@ -30,19 +41,40 @@ export interface UserAttributes {
   email: string;
   username: string;
   Comments?: CommentAttributes[];
+  Posts?: PostAttributes[];
   Business?: BusinessAttributes;
 }
 
-export interface InclusionOptions {
-  include: [{
-    model: any;
-    attributes?: string[];
-    where?: { [key: string]: any };
-    required?: boolean;
-    separated?: boolean;
-  }];
-  order: [[ { model: any, as: string } | string, string, string]];
+export interface InclusionOptionsOut {
+  include: Inclusion[];
+  order: InclusionOrders['order'][];
+  // limit?: number;
+  // offset?: number;
+  distinct?: boolean;
+  // subQuery?: boolean;
+}
+
+export interface Inclusion {
+  model: any;
+  attributes?: string[];
+  where?: { [key: string]: any };
+  required?: boolean;
+  separated?: boolean;
   limit?: number;
-  offset?: number;
-  subQuery?: boolean;
+}
+
+export interface InclusionOrders {
+  order: [ ({ model: any, as: string } | string), any, string]
+}
+
+export interface InclusionOptionsInput {
+  model: any,
+  attributes?: string[],
+  order?: { column: string, order?: string },
+  order_value?: string,
+  limit?: number
+  condition?: {[key: string]: string | boolean} | {},
+  required?: boolean
+  separated?: boolean
+  scopes?: string []
 }

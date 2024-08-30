@@ -2,6 +2,7 @@ import { DataTypes, Model } from 'sequelize';
 import sequelize from '../db/database';
 import Business from './Business';
 import Comment from './Comment';
+import Post from './Post';
 import { UserAttributes } from '../types'
 import bcrypt from 'bcrypt';
 
@@ -18,6 +19,7 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public updated_at!: Date;
   public password_digest!: string;
   public Business?: Business;
+  public Posts?: Post[];
   public Comments?: Comment[];
 
   public static alias: string = 'Users';
@@ -40,9 +42,10 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
       id: this.id,
       email: this.email,
       business_id: this.business_id,
-      password_digest: this.password_digest,
+      // password_digest: this.password_digest,
       comments: this.Comments?.map(comment => comment) || [],
-      businesses: this.Business
+      posts: this.Posts?.map(post => post) || [],
+      business: this.Business
     };
   }
 }

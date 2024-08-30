@@ -1,69 +1,60 @@
 import { toMomentDate } from '../utils/timeUtils';
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../db/database';
-import { CommentAttributes } from '../types';
+import { PostAttributes } from '../types'
 import User from './User';
 
-export interface CommentCreationAttributes extends Omit<CommentAttributes, 'id' | 'updated_at' | 'created_at' | 'seen'> {}
+export interface PostCreationAttributes extends Omit<PostAttributes, 'id' | 'updated_at' | 'created_at'> {}
 
-class Comment extends Model<CommentAttributes, CommentCreationAttributes> implements CommentAttributes {
+class Post extends Model<PostAttributes, PostCreationAttributes> implements PostAttributes {
   public id!: number;
-  public message!: string;
-  public comment_type!: number;
+  public body!: string;
   public user_id!: number;
-  public post_id!: number;
   public created_at!: Date;
   public updated_at!: Date;
-  public seen?: boolean;
   public User?: User;
+  public Comments?: Comment[];
 
-  public static alias: string = 'Comments';
+  public static alias: string = 'Posts';
+
+  public static associate_to_many(modelObject: any, key: string, alias?: string) {
+    if (alias) {
+      this.hasMany(modelObject, {as: alias, foreignKey: key});
+    } else {
+      this.hasMany(modelObject, {foreignKey: key});
+    }
+  }
 
   public static associate_belong_to(model: any, key: string) {
     this.belongsTo(model, { foreignKey: key});
   }
 
-  toJSON(): CommentAttributes | {} {
+  toJSON(): PostAttributes | {} {
     return {
       id: this.id,
-      post_id: this.post_id,
+      body: this.body,
       user_id: this.user_id,
-      message: this.message,
       created_at: toMomentDate(this.created_at).format('YYYY-MM-DD hh:mm:ss'),
-      comment_type: this.comment_type,
       user: this.User || [],
+      comments: this.Comments?.map(comment => comment) || [],
     };
   }
 }
 
-Comment.init(
+Post.init(
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    message: {
+    body: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    seen: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false,
-    },
-    comment_type: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 1,
     },
     user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-    },
-    post_id: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
     },
     created_at: {
       type: DataTypes.DATE,
@@ -78,17 +69,11 @@ Comment.init(
   },
   {
     scopes: {
-      seen: {
-        where: { seen: true }
-      },
-      unseen: {
-        where: { seen: false }
-      },
     },
     sequelize,
-    tableName: 'comments',
+    tableName: 'posts',
     timestamps: false
   }
 );
 
-export default Comment;
+export default Post;

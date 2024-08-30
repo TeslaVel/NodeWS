@@ -3,7 +3,7 @@ import Comment, { CommentCreationAttributes } from '../models/Comment';
 import User from '../models/User';
 import Post from '../models/Post';
 import { UserAttributes } from '../types';
-import { inclusion, paginate } from '../utils/inclusion'
+import { paginate } from '../utils/inclusion'
 import { returnJson } from '../utils/response'
 
 /***
@@ -19,10 +19,10 @@ export async function listComments(req: Request, res: Response) {
         page,
         perPage,
         query: {
-          ...inclusion([{
+          inclusion: [{
             model: User,
             required: false
-          }])
+          }]
         }
       })
     );
@@ -55,12 +55,11 @@ export async function listComments(req: Request, res: Response) {
 * CREATE COMMENT
 **/
 export async function createComment(req: Request, res: Response) {
+  const {
+    message,
+    post_id,
+  } = req.body;
   try {
-    const {
-      message,
-      post_id,
-    } = req.body;
-
     const user: UserAttributes = res.locals.user;
     const post = await Post.findByPk(post_id);
 

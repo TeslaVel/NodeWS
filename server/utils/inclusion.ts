@@ -1,4 +1,4 @@
-import { Inclusion, InclusionOrders, InclusionOptionsOut, InclusionOptionsInput } from '../types'
+import { PaginateOut, Inclusion, InclusionOrders, InclusionOptionsOut, InclusionOptionsInput } from '../types'
 import { Sequelize } from 'sequelize';
 
 function build_inclusion(inclusion: InclusionOptionsInput) {
@@ -49,26 +49,42 @@ export function inclusion(
   const data_inclusions: Inclusion[] = inclusions.map( (ic) => build_inclusion(ic));
   const data_orders: InclusionOrders['order'][] = inclusions.map( (ic) => build_orders(ic));
 
-  let data: InclusionOptionsOut = {
+  return {
     include: data_inclusions,
     order: data_orders,
     distinct: true
   }
-
-  return data;
 }
 
-export function paginate(options: { page: any, perPage: number, query?: {}}) {
-  const currentPage = parseInt(options.page);
+export function paginate(options: { page: any, perPage: number, query?: {[key: string]: any}}): PaginateOut {
+
+  const { page, perPage, query } = options;
+  const inclusions = query?.inclusions || []
+  const currentPage = parseInt(page);
   const pg = currentPage > 0
     ? currentPage - 1
     : 0
 
-  const offset = pg * options.perPage;
+  const offset = pg * perPage;
 
-  return {
-    ...options.query,
-    limit: options.perPage,
+  let returnData: PaginateOut = {
+    limit: perPage,
     offset
   }
+
+  if (query) {
+    returnData = {
+      ...query,
+      ...returnData
+    }
+  }
+
+  if (inclusions && inclusions.length > 0 ) {
+    returnData = {
+      ...returnData,
+      ...inclusion(inclusions)
+    }
+  }
+
+  return returnData;
 }

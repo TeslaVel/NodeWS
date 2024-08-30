@@ -27,7 +27,7 @@ npx sequelize-cli db:drop
 ```sh
 npx sequelize-cli db:migrate
 ```
-### Specific mgiration
+### Specific migration
 ```sh
 npx sequelize db:migrate --name XXXXXXXXXXXXXX-create-comments.js
 ```
@@ -36,9 +36,9 @@ npx sequelize db:migrate --name XXXXXXXXXXXXXX-create-comments.js
 ```sh
 npx sequelize-cli db:migrate:undo:all
 ```
-## Secific migration
+## Specific migration
 ```sh
-npx sequelize-cli db:migrate:undo:all --to 20230629121848-create-comments.js
+npx sequelize-cli db:migrate:undo:all --to XXXXXXXXXXXXXX-create-comments.js
 ```
 
 

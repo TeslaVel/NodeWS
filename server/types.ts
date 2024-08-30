@@ -47,12 +47,16 @@ export interface UserAttributes {
 
 export interface InclusionOptionsOut {
   include: Inclusion[];
-  order: InclusionOrders['order'][];
-  // limit?: number;
-  // offset?: number;
+  order?: InclusionOrders['order'][];
   distinct?: boolean;
   // subQuery?: boolean;
 }
+
+export interface PaginateOut extends Omit<InclusionOptionsOut, 'include'> {
+  include?: Inclusion[];
+  offset: number;
+  limit: number;
+};
 
 export interface Inclusion {
   model: any;

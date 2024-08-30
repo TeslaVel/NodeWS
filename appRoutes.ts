@@ -6,8 +6,8 @@ import { sessionMiddleWare } from './server/middlewares/sessionMiddleWare'
   * Controller Methods
   **/
 import { createComment, listComments } from './server/controllers/commentController';
-import { createUser, loginUser, listUsers, updateUser } from './server/controllers/userController';
-import { listPosts, createPost } from './server/controllers/postController';
+import { createUser, loginUser, listUsers, updateUser, showUser } from './server/controllers/userController';
+import { listPosts, createPost, updatePost, showPost } from './server/controllers/postController';
 import { createBusiness, listBusinesses } from './server/controllers/businessController';
 
 
@@ -28,6 +28,7 @@ export default (app: Express) => {
   * USER Routes
   **/
   router.get('/users', listUsers);
+  router.get('/users/:id', showUser);
   router.post('/signup', createUser);
   router.post('/login', loginUser);
   router.post('/users/update', updateUser);
@@ -43,6 +44,8 @@ export default (app: Express) => {
   **/
     router.get('/posts', listPosts);
     router.post('/posts', createPost);
+    router.post('/posts/:id/update', updatePost);
+    router.get('/posts/:id', showPost);
 
   /***
   * BUSINESS Routes

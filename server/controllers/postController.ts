@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import Post, { PostCreationAttributes } from '../models/Post';
 import Comment from '../models/Comment';
-// import User from '../models/User';
+import User from '../models/User';
 import { UserAttributes } from '../types';
-import { inclusion, paginate } from '../utils/inclusion'
+import { paginate, inclusion } from '../utils/inclusion'
 import { returnJson } from '../utils/response'
 
 /***
@@ -20,10 +20,10 @@ export async function listPosts(req: Request, res: Response) {
         perPage,
         query: {
           attributes: ['id', 'user_id', 'body', 'created_at'],
-          ...inclusion([{
+          inclusions: [{
             model: Comment,
             required: false
-          }])
+          }]
         }
       })
     );
@@ -47,6 +47,66 @@ export async function listPosts(req: Request, res: Response) {
         res,
         code: 500,
         message: 'An error occurred while trying to list posts.'
+      }
+    )
+  }
+}
+
+/***
+* SHOW POST
+**/
+export async function showPost(req: Request, res: Response) {
+  const postId = req.params.id;
+  console.log('postId', postId)
+  try {
+    const post = await Post.findByPk(postId, {
+      ...inclusion(
+        [
+          {
+            model: User,
+            attributes: ['id', 'created_at'],
+            order: {
+              column: 'created_at',
+              order: 'ASC'
+            }
+          },
+          {
+            model: Comment,
+            attributes: ['id', 'created_at', 'user_id', 'post_id'],
+            order: {
+              column: 'created_at',
+              order: 'ASC'
+            }
+          },
+      ]
+      )
+    });
+
+    if (!post) {
+      return returnJson(
+        {
+          res,
+          code: 404,
+          message: 'Post does not exits'
+        }
+      )
+    }
+
+    return returnJson(
+      {
+        res,
+        code: 200,
+        data: post
+      }
+    )
+
+  } catch (error) {
+    console.error(error);
+    return returnJson(
+      {
+        res,
+        code: 500,
+        message: 'An error occurred while trying to get user.'
       }
     )
   }
@@ -96,5 +156,49 @@ export async function createPost(req: Request, res: Response) {
         message: "The post could not be created"
       }
     )
+  }
+}
+
+
+/***
+* UPDATE POST
+**/
+export async function updatePost(req: Request, res: Response) {
+  const postId = req.params.id;
+
+  const post = await Post.findByPk(postId);
+
+  if (!post) {
+    return returnJson(
+      {
+        res,
+        code: 404,
+        message: 'Post does not exits'
+      }
+    )
+  }
+
+  const { body } = req.body;
+
+  try {
+    const updated = await post.update({ body: body });
+
+    return returnJson(
+      {
+        res,
+        code: 200,
+        message: 'Post updated',
+        data: updated
+      }
+    );
+  } catch (error) {
+    console.error(error);
+    return returnJson(
+      {
+        res,
+        code: 500,
+        message: 'The post could not be updated'
+      }
+    );
   }
 }

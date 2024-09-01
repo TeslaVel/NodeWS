@@ -57,7 +57,7 @@ npx sequelize-cli db:seed:undo:all
  npx ts-node app.ts
 ```
 
-# Run in local
+## Using nodemon
 ```sh
  nodemon --exec ts-node app.ts
 ```

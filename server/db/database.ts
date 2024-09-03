@@ -1,7 +1,5 @@
 import { dbConfig } from '../../config/db';
 import { Sequelize, Dialect } from 'sequelize';
-import '../../dotenv';
-require('dotenv').config();
 
 const { database, username, password, host, dialect } = dbConfig();
 

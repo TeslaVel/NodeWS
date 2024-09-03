@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import Post, { PostCreationAttributes } from '../models/Post';
-import Comment from '../models/Comment';
-import User from '../models/User';
-import { UserAttributes } from '../types';
-import { paginate, inclusion } from '../utils/inclusion'
-import { returnJson } from '../utils/response'
+import Post, { PostCreationAttributes } from '../../../models/Post';
+import Comment from '../../../models/Comment';
+import User from '../../../models/User';
+import { UserAttributes } from '../../../types';
+import { paginate, inclusion } from '../../../utils/inclusion'
+import { returnJson } from '../../../utils/response'
 
 /***
 * LIST PostS

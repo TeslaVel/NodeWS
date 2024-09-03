@@ -1,4 +1,4 @@
-import '../../dotenv';
+require('dotenv').config();
 import jwt from 'jsonwebtoken';
 const secretTk = process.env.SECRET_TK;
 

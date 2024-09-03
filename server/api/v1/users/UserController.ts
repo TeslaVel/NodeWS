@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import User, { UserCreationAttributes } from '../models/User';
-import Comment from '../models/Comment';
-import Post from '../models/Post';
-import { UserAttributes } from '../types'
+import User, { UserCreationAttributes } from '../../../models/User';
+import Comment from '../../../models/Comment';
+import Post from '../../../models/Post';
+import { UserAttributes } from '../../../types'
 import bcrypt from 'bcrypt';
-import { generateToken } from '../utils/jwtUtils'
-import { returnJson } from '../utils/response'
-import { paginate, inclusion } from '../utils/inclusion'
+import { generateToken } from '../../../utils/jwtUtils'
+import { returnJson } from '../../../utils/response'
+import { paginate, inclusion } from '../../../utils/inclusion'
 
 /***
 * LIST USER
@@ -74,7 +74,7 @@ export async function listUsers(req: Request, res: Response) {
 **/
 export async function showUser(req: Request, res: Response) {
   const userId = req.params.id;
-
+  console.log("####### params id", userId)
   try {
     const user = await User.findByPk(userId, {
       ...inclusion(
@@ -95,10 +95,10 @@ export async function showUser(req: Request, res: Response) {
               order: 'ASC'
             }
           },
-      ]
+        ]
       )
     });
-
+    console.log("####### user", user);
     if (!user) {
       return returnJson(
         {

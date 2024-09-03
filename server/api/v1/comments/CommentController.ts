@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import Comment, { CommentCreationAttributes } from '../models/Comment';
-import User from '../models/User';
-import Post from '../models/Post';
-import { UserAttributes } from '../types';
-import { paginate } from '../utils/inclusion'
-import { returnJson } from '../utils/response'
+import Comment, { CommentCreationAttributes } from '../../../models/Comment';
+import User from '../../../models/User';
+import Post from '../../../models/Post';
+import { UserAttributes } from '../../../types';
+import { paginate } from '../../../utils/inclusion'
+import { returnJson } from '../../../utils/response'
 
 /***
 * LIST COMMENTS

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import Business, { BusinessCreationAttributes } from '../models/Business';
-import User from '../models/User';
-import { returnJson } from '../utils/response'
+import Business, { BusinessCreationAttributes } from '../../../models/Business';
+import User from '../../../models/User';
+import { returnJson } from '../../../utils/response'
 
 /***
 * LIST BUSINESSES

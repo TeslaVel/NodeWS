@@ -1,7 +1,7 @@
 // app.ts
 import './dotenv';
 import express from 'express';
-import app_routes from './appRoutes';
+import indexRouter from './server/routes/index';
 const cors = require('cors');
 
 const app = express();
@@ -13,8 +13,10 @@ app.use(cors({
 
 // Middleware para analizar el cuerpo de las solicitudes como JSON
 app.use(express.json());
-app.use('/', app_routes(app));
+app.use('/', indexRouter);
 
 app.listen(port, () => {
   console.log(`Servidor escuchando en http://localhost:${port}`);
 });
+
+// module.exports = app;

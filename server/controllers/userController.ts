@@ -257,18 +257,19 @@ export async function updateUser(req: Request, res: Response) {
       email,
       password } = req.body;
 
+    console.log('=====> password', password);
     const data = {
       first_name,
       last_name,
       business_id,
       username,
       email,
-      password
+      password_digest: password
     }
 
     const updated = await User.update(
       data,
-      { where: { id: user.id } }
+      { where: { id: user.id }, individualHooks: true }
     );
 
     return returnJson(

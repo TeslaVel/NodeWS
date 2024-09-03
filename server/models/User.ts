@@ -96,12 +96,14 @@ User.init(
   },
   {
     hooks : {
-      beforeCreate : (record) => {
+      beforeCreate: (record) => {
         record.dataValues.password_digest = bcrypt.hashSync(record.dataValues.password_digest, 11);
       },
-      beforeUpdate : (record) => {
-        record.dataValues.updated_at = new Date();
-        record.dataValues.password_digest = bcrypt.hashSync(record.dataValues.password_digest, 11);
+      beforeUpdate: (record, options) => {
+        if (record.changed('password_digest')) {
+          record.dataValues.password_digest = bcrypt.hashSync(record.dataValues.password_digest, 11);
+          record.password_digest = record.dataValues.password_digest; // Update the previous password field
+        }
       }
     },
     sequelize,

@@ -1,9 +1,9 @@
-import condig from '../../config/config';
+import { dbConfig } from '../../config/db';
 import { Sequelize, Dialect } from 'sequelize';
 import '../../dotenv';
 require('dotenv').config();
 
-const { database, username, password, host, dialect } = condig.db;
+const { database, username, password, host, dialect } = dbConfig();
 
 const sequelize = new Sequelize(
   database,
